@@ -17,7 +17,32 @@ class App < Sinatra::Base
 
     # Routen /
     get '/' do
-        erb :index
+       redirect("/index")
     end
+
+    get '/index' do
+      @cookies = db.execute('SELECT * FROM cookies')
+      @customers = db.execute('SELECT * FROM customers')
+
+      erb(:"/index")
+    end
+
+    get '/products' do
+      @cookies = db.execute('SELECT * FROM cookies')
+      @customers = db.execute('SELECT * FROM customers')
+
+      erb(:"/products")
+    end
+
+    get '/products/:cookieid' do | cookieid |
+      @cookies = db.execute('SELECT * FROM cookies WHERE cookieid=?', cookieid).first
+     
+
+      erb(:"/show")
+    end
+
+
+
+    
 
 end

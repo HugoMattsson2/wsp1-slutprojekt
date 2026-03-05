@@ -7,9 +7,19 @@
     <link rel="stylesheet" type="text/css" href="/style.css?<%=Time.now.to_i%>">
 </head>
 <body>
-  <h1>Välkommen!</h1>
+  <h1>Produkter</h1>
 
-<a href="products"> Products <a/>
+
+<% @cookies.each do |cookie|%>
+
+
+
+  <a href="/products/<%=cookie['cookieid']%>"><%= cookie["cookiename"]%></a>
+
+ <%end%> 
+
+
+<a href="index"> Start <a/>
 
 </body>
 </html>
