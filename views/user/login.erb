@@ -1,0 +1,13 @@
+
+<form action="/login" method="post" autocomplete="off">
+    <label> Användarnamn <input type="text" name="customername" autocomplete="off"></label> 
+    <label> Lösenord <input type="text" name="customerpass" autocomplete="off"></label>
+    <input type="submit" value="Spara">  
+</form>
+
+<% if @error %>
+  <p style="color:red;"><%= @error %></p>
+<% end %>
+
+<a href="/main/index" class="button"> Tillbaka </a>
+<%puts session.inspect %>

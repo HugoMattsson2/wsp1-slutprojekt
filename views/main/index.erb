@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projekt #2</title>
+    <link rel="stylesheet" type="text/css" href="/style.css?<%=Time.now.to_i%>">
+</head>
+<body>
+
+<% if @customer %>
+  <h1>Välkommen <%= @customer["customername"] %>!</h1>
+  <a class="button" href="/logout"> Log out <a/>
+  <a class="button" href="/cart"> Varukorg <a/>
+<% else %>
+  <h1>Du är inte inloggad</h1>
+  <a class="button" href="/login"> Log In <a/>
+<a class="button" href="/signup"> Sign Up <a/>
+<% end %>
+
+<a class="button" href="/products"> Products <a/>
+
+<% @cart_items.each do |cookie| %>
+  <div>
+    <h3><%= cookie["cookiename"] %> x <%= cookie["quantity"] %></h3>
+    <p><%= cookie["cookieprice"] %> kr</p>
+
+    <form action="/cart/remove/<%= cookie["cookieid"] %>" method="post">
+      <button>Ta bort</button>
+    </form>
+  </div>
+<% end %>
+
+
+</body>
+</html>

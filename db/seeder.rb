@@ -1,5 +1,6 @@
 require 'sqlite3'
 require_relative '../config'
+require 'bcrypt'
 
 class Seeder
 
@@ -29,19 +30,23 @@ class Seeder
 
     db.execute('CREATE TABLE customers (
                 customerid INTEGER PRIMARY KEY AUTOINCREMENT,
-                customername TEXT NOT NULL,
-                customerdescription TEXT,
-                customerhistory TEXT)')
+                customername TEXT NOT NULL UNIQUE,
+                customerpass TEXT, 
+                role TEXT DEFAULT "user")')
+
+                
+   
+            
   end
 
 
   def self.populate_tables
     db.execute('INSERT INTO cookies (cookiename, cookiedescription, cookieprice) VALUES ("Choklad", " God med 25% protein", "25kr")')
     db.execute('INSERT INTO cookies (cookiename, cookiedescription, cookieprice) VALUES ("Vanilj", " God med 55% protein", "35kr")')
-    db.execute('INSERT INTO customers (customername, customerdescription, customerhistory) VALUES ("Kevin", "170 cm", "4 kakor")')
-  
-  end
+    password = BCrypt::Password.create("admin123")
+    db.execute('INSERT INTO customers (customername, customerpass, role) VALUES (?, ?, ?)', ["admin", password, "admin"])
 
+  end
 
 
   private

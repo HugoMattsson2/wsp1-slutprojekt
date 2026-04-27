@@ -1,0 +1,17 @@
+<h2> Ändra produkt </h2>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projekt #2</title>
+    <link rel="stylesheet" type="text/css" href="/style.css?<%=Time.now.to_i%>">
+</head>
+
+<form action="/products/<%=@cookies["cookieid"]%>/update" method="post">
+    <label> Kaka <input type="text" name="newcookiename" value="<%=@cookies['cookiename']%>"></label> 
+    <label> Beskrivning <input type="text" name="newcookiedescription" value="<%=@cookies['cookiedescription']%>"></label>
+    <label> Pris <input type="text" name="newcookieprice" value="<%=@cookies['cookieprice']%>"></label>
+    <input type="submit" value="Spara">  
+</form>
+
+<a class="button" href="/products"> Tillbaka </a>

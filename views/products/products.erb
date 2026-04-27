@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projekt #2</title>
+    <link rel="stylesheet" type="text/css" href="/style.css?<%=Time.now.to_i%>">
+</head>
+<body>
+
+<h1>Produkter</h1>
+
+<div class="product-section">
+
+  <% @cookies.each do |cookie| %>
+    <div>
+      <a class="button" href="/products/<%= cookie['cookieid'] %>">
+        <%= cookie["cookiename"] %>
+      </a>
+    </div>
+  <% end %>
+
+  <% if admin? %>
+    <a class="button" href="/products/new">Lägg till produkt</a>
+  <% end %>
+
+  <a class="button" href="/main/index">Start</a>
+
+</div>
+
+</body>
+</html>

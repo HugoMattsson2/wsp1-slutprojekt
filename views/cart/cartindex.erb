@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projekt #2</title>
+    <link rel="stylesheet" type="text/css" href="/style.css?<%=Time.now.to_i%>">
+</head>
+<body>
+
+
+<h1>Din varukorg</h1>
+
+
+<% if @cart_items.empty? %>
+  <p>Varukorgen är tom</p>
+<% end %>
+
+<% @cart_items.each do |cookie| %>
+  <div>
+    <h3><%= cookie["cookiename"] %></h3>
+    <p><%= cookie["cookieprice"] %></p>
+    <p>Antal: <%= cookie["quantity"] %></p>
+
+    <form action="/cart/remove_one/<%= cookie["cookieid"] %>" method="post">
+      <button>-</button>
+    </form>
+
+    <form action="/cart/add/<%= cookie["cookieid"] %>" method="post">
+      <button>+</button>
+    </form>
+  </div>
+<% end %>
+
+<a class="button" href="/main/index">Start</a>
+<a class="button" href="/products">Tillbaka</a>

@@ -1,0 +1,35 @@
+ 
+ <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projekt #2</title>
+    <link rel="stylesheet" type="text/css" href="/style.css?<%=Time.now.to_i%>">
+</head>
+ 
+ <h2><%= @cookie["cookiename"]%></h2>
+  <p><%= @cookie["cookiedescription"]%></p>
+  <p><%= @cookie["cookieprice"]%> kr</p>
+
+
+  <% if current_user %>
+    <form action="/cart/add/<%= @cookie["cookieid"] %>" method="post">
+      <input type="number" name="quantity" value="1" min="1">
+      <button>Lägg till i varukorg</button>
+    </form>
+  <% else %>
+    <p><a href="/login">Logga in för att handla</a></p>
+  <% end %>
+
+    
+<% if admin? %>
+  <form action="/products/<%= @cookie["cookieid"] %>/delete" method="post">
+    <button>Delete</button>
+  </form>
+  <form action="/products/<%=@cookie["cookieid"]%>/edit" method="get">
+    <input type="submit" value="Ändra">
+  </form>
+<% end %>
+
+
+  <a class="button" href="/main/index"> Start </a>
+  <a class="button" href="/products"> Tillbaka </a>   
