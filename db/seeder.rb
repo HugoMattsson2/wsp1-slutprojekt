@@ -19,6 +19,7 @@ class Seeder
   def self.drop_tables
     db.execute('DROP TABLE IF EXISTS cookies')
     db.execute('DROP TABLE IF EXISTS customers')
+    db.execute('DROP TABLE IF EXISTS cart_items')
   end
 
   def self.create_tables
@@ -33,6 +34,13 @@ class Seeder
                 customername TEXT NOT NULL UNIQUE,
                 customerpass TEXT, 
                 role TEXT DEFAULT "user")')
+
+     db.execute('CREATE TABLE cart_items (
+                 customerid INTEGER,
+                 cookieid INTEGER,
+                 quantity INTEGER, 
+                 FOREIGN KEY (customerid) REFERENCES customers(customerid),
+                 FOREIGN KEY (cookieid) REFERENCES cookies(cookieid))')
 
                 
    

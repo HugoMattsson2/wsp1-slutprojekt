@@ -62,10 +62,8 @@ class App < Sinatra::Base
     get '/main/index' do
       @cookies = db.execute('SELECT * FROM cookies')
       @customers = db.execute('SELECT * FROM customers')
-      session[:cart] = {} unless session[:cart].is_a?(Hash)
 
-      @cart_items = session[:cart_items] || {} 
-
+      @cart_items = db.execute("SELECT cookies.*, cart_items.quantity FROM cart_items JOIN cookies ON cookies.cookieid = cart_items.cookieid WHERE cart_items.customerid = ?",[session[:user_id]])
 
       erb(:"/main/index")
     end
@@ -210,41 +208,50 @@ ap db.execute("SELECT * FROM customers")
   end 
 
   get "/cart" do
-    session[:cart] ||= {}
-    session[:cart] = {} unless session[:cart].is_a?(Hash)
-  
-    @cart_items = session[:cart].map do |id, qty|
-      cookie = db.execute("SELECT * FROM cookies WHERE cookieid = ?", id).first
-      next unless cookie
-  
-      cookie["quantity"] = qty
-      cookie
-    end.compact
-  
+    require_login
+
+    @cart_items = db.execute("SELECT cookies.*, cart_items.quantity FROM cart_items JOIN cookies ON cookies.cookieid= cart_items.cookieid WHERE cart_items.customerid = ?", [session[:user_id]])
+      
+    @total_price = db.execute("SELECT SUM(cookies.cookieprice * cart_items.quantity) AS total FROM cart_items JOIN cookies ON cookies.cookieid = cart_items.cookieid WHERE cart_items.customerid = ?", [session[:user_id]]).first["total"] || 0
+
+
     erb :"cart/cartindex"
   end
 
 
   post "/cart/add/:id" do
-    id = params[:id].to_s
+    require_login
+
+    id = params[:id]
     qty = params[:quantity].to_i
     qty = 1 if qty <= 0
   
-    session[:cart] ||= {}
-    session[:cart][id] ||= 0
-    session[:cart][id] += qty
+    existing = db.execute("SELECT * FROM cart_items WHERE customerid = ? AND cookieid = ?", [session[:user_id], id]).first
   
+    if existing
+      db.execute("UPDATE cart_items SET quantity = quantity + ? WHERE customerid = ? AND cookieid = ?", [qty, session[:user_id], id])
+    else
+      db.execute("INSERT into cart_items(customerid, cookieid, quantity) VALUES (?, ?, ?)",  [session[:user_id], id, qty])
+    end
+
     redirect "/cart"
   end
 
   post "/cart/remove_one/:id" do
-    id = params[:id].to_s
-    session[:cart][id] ||= 0
-  
-    if session[:cart][id]
-      session[:cart][params[:id]] -= 1
+    require_login
+
+    id = params[:id]
+
+    item = db.execute("SELECT * FROM cart_items WHERE customerid = ? AND cookieid = ?", [session[:user_id], id]).first
+
+    if item
+      if item["quantity"].to_i > 1
+        db.execute("UPDATE cart_items SET quantity = quantity - 1 WHERE customerid = ? AND cookieid = ?", [session[:user_id], id])
+      else
+        db.execute("DELETE FROM cart_items WHERE customerid = ? AND cookieid = ?", [session[:user_id], id])
+      end
     end
-  
+
     redirect "/cart"
   end
 end

@@ -12,6 +12,14 @@
 <h1>Din varukorg</h1>
 
 
+<%
+  total = 0
+  @cart_items.each do |item|
+    total += item["cookieprice"].to_f * item["quantity"].to_i
+  end
+
+%>
+
 <% if @cart_items.empty? %>
   <p>Varukorgen är tom</p>
 <% end %>
@@ -31,6 +39,9 @@
     </form>
   </div>
 <% end %>
+
+<h2>Total: <%= total%> kr</h2>
+
 
 <a class="button" href="/main/index">Start</a>
 <a class="button" href="/products">Tillbaka</a>
